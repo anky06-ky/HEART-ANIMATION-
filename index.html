@@ -1,15 +1,197 @@
-<!doctype html>
-<html lang="en"> 
- <head> 
-  <meta charset="UTF-8"> 
-  <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-  <title>Heart Animation</title> 
-  <link rel="stylesheet" href="style.css"> 
- </head> 
- <body> 
-  <canvas id="canvas" width="1400" height="600"> 
-  </canvas> 
-  <script src="app.js"></script> 
- </body>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Công Việc</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-tasks"></i> Quản Lý Công Việc</h1>
+            <div class="header-controls">
+                <button id="theme-toggle" class="btn-icon" title="Chuyển chế độ sáng/tối">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="view-toggle" class="btn-icon" title="Chuyển đổi giao diện">
+                    <i class="fas fa-th-list"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="project-section">
+                    <h3><i class="fas fa-folder"></i> Dự Án</h3>
+                    <div class="project-list">
+                        <div class="project-item active" data-project="all">
+                            <i class="fas fa-inbox"></i>
+                            <span>Tất cả</span>
+                            <span class="count" id="all-count">0</span>
+                        </div>
+                        <div class="project-item" data-project="personal">
+                            <i class="fas fa-user"></i>
+                            <span>Cá nhân</span>
+                            <span class="count" id="personal-count">0</span>
+                        </div>
+                        <div class="project-item" data-project="work">
+                            <i class="fas fa-briefcase"></i>
+                            <span>Công việc</span>
+                            <span class="count" id="work-count">0</span>
+                        </div>
+                        <div class="project-item" data-project="shopping">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Mua sắm</span>
+                            <span class="count" id="shopping-count">0</span>
+                        </div>
+                    </div>
+                    <button id="add-project" class="btn-add-project">
+                        <i class="fas fa-plus"></i> Thêm dự án
+                    </button>
+                </div>
+
+                <div class="filter-section">
+                    <h3><i class="fas fa-filter"></i> Bộ lọc</h3>
+                    <div class="filter-list">
+                        <div class="filter-item" data-filter="today">
+                            <i class="fas fa-calendar-day"></i>
+                            <span>Hôm nay</span>
+                        </div>
+                        <div class="filter-item" data-filter="upcoming">
+                            <i class="fas fa-calendar-week"></i>
+                            <span>Sắp tới</span>
+                        </div>
+                        <div class="filter-item" data-filter="overdue">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Quá hạn</span>
+                        </div>
+                        <div class="filter-item" data-filter="completed">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Hoàn thành</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tag-section">
+                    <h3><i class="fas fa-tags"></i> Thẻ</h3>
+                    <div class="tag-list" id="tag-list">
+                        <!-- Tags will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="todo-section">
+                <div class="todo-header">
+                    <div class="todo-title">
+                        <h2 id="current-view-title">Tất cả công việc</h2>
+                        <span class="todo-count" id="todo-count">0 công việc</span>
+                    </div>
+                    <div class="todo-controls">
+                        <select id="sort-select">
+                            <option value="created">Ngày tạo</option>
+                            <option value="due">Hạn chót</option>
+                            <option value="priority">Độ ưu tiên</option>
+                            <option value="name">Tên</option>
+                        </select>
+                        <button id="add-todo" class="btn-primary">
+                            <i class="fas fa-plus"></i> Thêm công việc
+                        </button>
+                    </div>
+                </div>
+
+                <div class="todo-input-section" id="todo-input-section" style="display: none;">
+                    <form id="todo-form">
+                        <input type="text" id="todo-title" placeholder="Tên công việc..." required>
+                        <textarea id="todo-description" placeholder="Mô tả (tùy chọn)"></textarea>
+                        
+                        <div class="todo-options">
+                            <div class="option-group">
+                                <label><i class="fas fa-calendar"></i> Hạn chót:</label>
+                                <input type="date" id="todo-due-date">
+                            </div>
+                            
+                            <div class="option-group">
+                                <label><i class="fas fa-flag"></i> Độ ưu tiên:</label>
+                                <select id="todo-priority">
+                                    <option value="low">Thấp</option>
+                                    <option value="medium" selected>Trung bình</option>
+                                    <option value="high">Cao</option>
+                                    <option value="urgent">Khẩn cấp</option>
+                                </select>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label><i class="fas fa-folder"></i> Dự án:</label>
+                                <select id="todo-project">
+                                    <option value="personal">Cá nhân</option>
+                                    <option value="work">Công việc</option>
+                                    <option value="shopping">Mua sắm</option>
+                                </select>
+                            </div>
+                            
+                            <div class="option-group">
+                                <label><i class="fas fa-tags"></i> Thẻ:</label>
+                                <input type="text" id="todo-tags" placeholder="thẻ1, thẻ2, thẻ3...">
+                            </div>
+                        </div>
+                        
+                        <div class="form-buttons">
+                            <button type="submit" class="btn-primary">Thêm công việc</button>
+                            <button type="button" id="cancel-todo" class="btn-secondary">Hủy</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="search-section">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-input" placeholder="Tìm kiếm công việc...">
+                        <button id="clear-search" class="btn-icon" style="display: none;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="todo-list" id="todo-list">
+                    <!-- Todo items will be dynamically added here -->
+                </div>
+
+                <div class="empty-state" id="empty-state" style="display: none;">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>Chưa có công việc nào</h3>
+                    <p>Hãy thêm công việc đầu tiên của bạn!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="todo-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modal-body">
+                <!-- Modal content will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="project-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Thêm dự án mới</h2>
+            <form id="project-form">
+                <input type="text" id="project-name" placeholder="Tên dự án..." required>
+                <input type="color" id="project-color" value="#4285f4">
+                <div class="form-buttons">
+                    <button type="submit" class="btn-primary">Thêm dự án</button>
+                    <button type="button" class="btn-secondary modal-close">Hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
 </html>  
